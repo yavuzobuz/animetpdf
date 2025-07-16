@@ -81,10 +81,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signInWithGoogle = async () => {
     try {
+      // Production'da her zaman Vercel URL'ini kullan
+      const isProduction = typeof window !== 'undefined' && 
+                          window.location.hostname !== 'localhost';
+      
+      const redirectUrl = isProduction 
+        ? 'https://animetpdf.vercel.app'
+        : 'http://localhost:3000';
+
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback?next=/profil`,
+          redirectTo: `${redirectUrl}/auth/callback?next=/profil`,
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
